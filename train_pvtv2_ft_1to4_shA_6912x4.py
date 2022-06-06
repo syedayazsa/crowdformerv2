@@ -4,7 +4,7 @@
 from __future__ import division
 import warnings
 #from Networks.models import base_patch16_384_token, base_patch16_384_gap
-from Networks.models_pvtv2_ft_1to4_6912x4_master import pvt_v2_b5
+from Networks.models_pvtv2_ft_1to4_6912x4 import pvt_v2_b5
 import torch.nn as nn
 from torchvision import transforms
 import dataset
