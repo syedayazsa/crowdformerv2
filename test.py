@@ -1,7 +1,8 @@
 from __future__ import division
 import warnings
-from Networks.models import base_patch16_384_token, base_patch16_384_gap
+# from Networks.models import base_patch16_384_token, base_patch16_384_gap
 import torch.nn as nn
+from Networks.models_pvtv2_ft_1to4_6912x4 import pvt_v2_b5
 from torchvision import transforms
 import dataset
 import math
@@ -50,9 +51,9 @@ def main(args):
     os.environ['CUDA_VISIBLE_DEVICES'] = args['gpu_id']
 
     if args['model_type'] == 'token':
-        model = base_patch16_384_token(pretrained=True)
+        model = pvt_v2_b5(pretrained=True)
     elif args['model_type'] == 'gap':
-        model = base_patch16_384_gap(pretrained=True)
+        model = pvt_v2_b5(pretrained=True)
 
     model = nn.DataParallel(model, device_ids=[0])
     model = model.cuda()
