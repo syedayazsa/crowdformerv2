@@ -247,7 +247,6 @@ class PyramidVisionTransformerV2(nn.Module):
 
         # regression head
 
-
         #self.head = nn.Linear(embed_dims[3], 1000) if num_classes > 0 else nn.Identity()
 
 
@@ -257,10 +256,13 @@ class PyramidVisionTransformerV2(nn.Module):
         self.head3 = nn.Linear(embed_dims[2], 6912)
         self.head4 = nn.Linear(embed_dims[3], 6912)
 
-
         self.output = nn.Sequential(
           nn.ReLU(),
-          nn.Linear(6912*4, 1),
+          nn.Linear(6912*4, 6912),
+          nn.ReLU(inplace=True),
+          nn.Linear(6912, 512),
+          nn.ReLU(inplace=True),
+          nn.Linear(512, 1)
           #nn.ReLU(),
           #nn.Dropout(0.5),
           #nn.Linear(64, 1)
@@ -270,7 +272,6 @@ class PyramidVisionTransformerV2(nn.Module):
         self.output.apply(self._init_weights)  
 
         self.apply(self._init_weights)
-
 
 
     def _init_weights(self, m):
@@ -367,12 +368,8 @@ class PyramidVisionTransformerV2(nn.Module):
         #print(x3.shape)
         #print(x4.shape)
 
-
-
         out=self.output(x)
         return out
-
-
 
 
 class DWConv(nn.Module):
@@ -398,9 +395,6 @@ def _conv_filter(state_dict, patch_size=16):
         out_dict[k] = v
 
     return out_dict
-
-
-
 
 @register_model
 def pvt_v2_b0(pretrained=False, **kwargs):
@@ -478,9 +472,5 @@ def pvt_v2_b2_li(pretrained=False, **kwargs):
         patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[1, 2, 5, 8], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], linear=True, **kwargs)
     model.default_cfg = _cfg()
-
-
-
-
 
     return model
